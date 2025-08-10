@@ -65,7 +65,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines.
 
 ## License 📜
 
-Distributed under the MIT License. See [LICENSE.txt](LICENSE.txt) for more information.
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 ## Acknowledgments 🙏
 
@@ -74,6 +74,6 @@ Distributed under the MIT License. See [LICENSE.txt](LICENSE.txt) for more infor
 
 ## Contact 📧
 
-[Your Name](mailto:your.email@example.com) - [@YourGitHubUsername](https://github.com/DrimoZ)
+[Théo Mille](mailto:drimozbe@gmail.com) - [@DrimoZ](https://github.com/DrimoZ)
 
 Project Link: [https://github.com/DrimoZ/WGames](https://github.com/DrimoZ/WGames)
