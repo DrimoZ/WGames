@@ -1,0 +1,80 @@
+// src/shared/ui/header/header.modules.scss
+
+@use '../../../styles/variables.scss' as *;
+
+.header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 1rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(255,255,255,0.012), rgba(0,0,0,0.02));
+    border: 1px solid rgba(126,249,255,0.04);
+    box-shadow: 0 10px 30px rgba(2,12,30,0.6);
+    backdrop-filter: blur(var(--glass-blur));
+}
+
+.brand {
+    display:flex;
+    align-items:center;
+    gap: 0.65rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    font-size: 1rem;
+}
+
+.logo {
+    width: 36px;
+    height: 36px;
+    display:inline-block;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(126,249,255,0.10), rgba(155,140,255,0.06));
+    box-shadow: 0 6px 18px rgba(126,249,255,0.03), inset 0 -6px 18px rgba(0,0,0,0.25);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.title {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+/* nav (links on the right) */
+.nav {
+    display:flex;
+    gap: 0.5rem;
+    align-items:center;
+}
+
+.nav a {
+    color: rgba(234,246,255,0.8);
+    text-decoration: none;
+    padding: 0.45rem 0.7rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background 160ms, color 160ms, transform 120ms;
+    border: 1px solid transparent;
+}
+
+.nav a:hover {
+    color: #021022;
+    background: linear-gradient(180deg, var(--accent), var(--accent-2));
+    transform: translateY(-3px);
+    box-shadow: 0 10px 26px rgba(126,249,255,0.06);
+}
+
+/* small icon buttons */
+.icon-btn {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.03);
+    color: rgba(234,246,255,0.82);
+    padding: 0.45rem 0.6rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.icon-btn:active { transform: translateY(1px); }

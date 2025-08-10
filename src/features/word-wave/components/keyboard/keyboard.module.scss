@@ -1,0 +1,59 @@
+// src/features/word-wave/components/keyboard/keyboard.module.scss
+
+@use '../../../../styles/variables.scss' as *;
+
+.keyboard {
+    width: 100%;
+    max-width: 520px;
+    display:flex;
+    flex-direction:column;
+    gap: 0.45rem;
+    margin-top: 6px;
+    align-items:center;
+}
+
+.row {
+    display:flex;
+    gap: 0.45rem;
+    justify-content:center;
+    width:100%;
+}
+
+.key {
+    min-width: 36px;
+    height: 44px;
+    border-radius: 8px;
+    border: none;
+    background: linear-gradient(180deg, rgba(255,255,255,0.018), rgba(255,255,255,0.01));
+    color: var(--muted);
+    font-weight: 700;
+    padding: 0 10px;
+    letter-spacing: 0.06rem;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.45);
+    transition: transform 120ms ease, background 160ms;
+    cursor: pointer;
+}
+.key:active { transform: translateY(2px); }
+
+.wide {
+    min-width: 72px;
+    border-radius: 10px;
+    font-weight: 800;
+}
+
+/* colored key states */
+.correct {
+    background: linear-gradient(180deg, rgba(126,249,255,0.14), rgba(126,249,255,0.06));
+    color: #021022;
+    border: 1px solid rgba(126,249,255,0.14);
+}
+.present {
+    background: linear-gradient(180deg, rgba(155,140,255,0.14), rgba(155,140,255,0.06));
+    color: #021022;
+    border: 1px solid rgba(155,140,255,0.14);
+}
+.absent {
+    background: rgba(255,255,255,0.02);
+    color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.03);
+}

@@ -1,0 +1,18 @@
+// src/features/word-wave/components/board/board.module.scss
+
+@use '../../../../styles/variables.scss' as *;
+
+.board {
+    width: 100%;
+    max-width: 420px;
+    display:flex;
+    flex-direction:column;
+    gap: var(--board-gap, 0.6rem);
+}
+
+.row {
+    display:grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--board-gap, 0.6rem);
+    justify-items:center;
+}

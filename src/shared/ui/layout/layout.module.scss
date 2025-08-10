@@ -1,0 +1,37 @@
+// src/shared/ui/layout/layout.modules.scss
+
+@use '../../../styles/variables.scss' as *;
+
+.app {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    display:flex;
+    flex-direction:column;
+    gap: 1rem;
+    min-height: 100vh;
+    padding: 0.6rem;
+}
+
+.headerWrapper {
+    position: sticky;
+    top: 12px;
+    z-index: 40;
+}
+
+/* main content area */
+.container {
+    flex: 1 1 auto;
+    padding: 1rem;
+    border-radius: calc(var(--radius) - 2px);
+    background: linear-gradient(180deg, rgba(2,8,20,0.14), rgba(0,3,10,0.18));
+    box-shadow: 0 14px 46px rgba(1,6,16,0.55);
+    backdrop-filter: blur(var(--glass-blur));
+}
+
+/* small page wrapper to center content */
+.page {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0.6rem;
+}

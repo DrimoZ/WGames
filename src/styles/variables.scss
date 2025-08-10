@@ -1,0 +1,35 @@
+// src/styles/variables.scss
+
+/* Design tokens / CSS variables for the app */
+:root {
+  /* Palette */
+    --bg: #06060a;
+    --panel: rgba(255,255,255,0.03);
+    --glass: rgba(255,255,255,0.04);
+    --accent: #7ef9ff; /* cyan */
+    --accent-2: #9b8cff; /* violet */
+    --muted: rgba(255,255,255,0.65);
+    --muted-2: rgba(255,255,255,0.45);
+
+  /* Sizes */
+    --max-width: 1100px;
+    --content-padding: 1rem;
+    --tile-size-mobile: 3.6rem;
+    --tile-size-md: 4.2rem;
+    --tile-size-lg: 4.8rem;
+    --board-gap: 0.6rem;
+
+  /* Shadows / blur */
+    --glass-blur: 8px;
+    --shadow-1: 0 6px 20px rgba(0,0,0,0.45);
+    --shadow-2: 0 12px 36px rgba(0,0,0,0.55);
+
+  /* Typography */
+    --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    --radius-md: 12px;
+}
+
+/* Breakpoints (helpers) */
+$bp-sm: 640px;
+$bp-md: 920px;
+$bp-lg: 1200px;

@@ -1,0 +1,80 @@
+// src/shared/ui/game-card/game-card.module.scss
+
+@use '../../../styles/variables.scss' as *;
+
+.card {
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    gap: 0.8rem;
+    padding: 1rem;
+    border-radius: calc(var(--radius, 12px));
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
+    border: 1px solid rgba(126,249,255,0.03);
+    box-shadow: 0 12px 34px rgba(0,6,20,0.55);
+    transition: transform 180ms ease, box-shadow 180ms ease, border 180ms ease;
+    min-height: 120px;
+    height: 100%; /* important so the grid cell can align cards height */
+    align-items: stretch;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 48px rgba(0,12,30,0.7);
+    border: 1px solid rgba(126,249,255,0.09);
+}
+
+.comingSoon { opacity: 0.95; filter: saturate(0.96); }
+
+/* head/meta */
+.head { display:flex; gap:0.9rem; align-items:center; }
+.iconWrap {
+    width: 56px; height:56px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(135deg, rgba(126,249,255,0.06), rgba(155,140,255,0.04));
+    box-shadow: 0 8px 22px rgba(126,249,255,0.03);
+    font-size:1.2rem;
+}
+.cardTitle {
+    margin:0; font-size:1.02rem; font-weight:800; color:var(--accent);
+}
+.badge {
+    display:inline-block; margin-left:0.5rem; padding:0.18rem 0.5rem; border-radius:8px;
+    font-size:0.72rem; font-weight:700; color: #021022;
+    background: linear-gradient(180deg, var(--accent), var(--accent-2));
+}
+
+/* desc */
+.desc { margin-top:0.35rem; color: rgba(234,246,255,0.86); font-size:0.95rem; line-height:1.3; }
+
+/* actions align bottom */
+.actions { display:flex; justify-content:flex-end; align-items:center; margin-top: 0.6rem; }
+
+/* BRIGHT PLAY button (higher contrast) */
+.play {
+    padding: 0.6rem 1rem;
+    border-radius: 12px;
+    font-weight: 900;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border: none;
+    background: linear-gradient(180deg, var(--accent), #4beef8);
+    color: #021022;
+    cursor: pointer;
+    box-shadow: 0 14px 36px rgba(75,238,248,0.06), 0 4px 8px rgba(2,10,20,0.3);
+    transition: transform 120ms ease, box-shadow 120ms ease;
+    display:inline-flex;
+    align-items:center;
+    gap: 0.45rem;
+}
+
+.play:hover { transform: translateY(-3px); box-shadow: 0 20px 48px rgba(75,238,248,0.09); }
+
+.play[aria-disabled='true'],
+.play:disabled {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    color: rgba(234,246,255,0.74);
+    border: 1px dashed rgba(255,255,255,0.03);
+    cursor: default;
+    transform: none;
+}
