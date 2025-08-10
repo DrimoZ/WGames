@@ -2,16 +2,25 @@
 
 /* Design tokens / CSS variables for the app */
 :root {
-  /* Palette */
-    --bg: #06060a;
-    --panel: rgba(255,255,255,0.03);
-    --glass: rgba(255,255,255,0.04);
-    --accent: #7ef9ff; /* cyan */
+    /* Palette — brighter but still futuristic */
+    --bg: #0b1b33; /* lighter blue-black */
+    --panel: rgba(255,255,255,0.05);
+    --glass: rgba(255,255,255,0.08);
+    --accent: #39d8ff; /* brighter cyan */
     --accent-2: #9b8cff; /* violet */
-    --muted: rgba(255,255,255,0.65);
-    --muted-2: rgba(255,255,255,0.45);
+    --muted: rgba(255,255,255,0.85);
+    --muted-2: rgba(255,255,255,0.65);
 
-  /* Sizes */
+    /* Tile colors */
+    --tile-bg: #17335c;
+    --tile-border: #2b4d80;
+
+    /* Key colors */
+    --key-bg: #234567;
+    --key-bg-hover: #39d8ff;
+    --key-text: #eaf6ff;
+
+    /* Sizes */
     --max-width: 1100px;
     --content-padding: 1rem;
     --tile-size-mobile: 3.6rem;
@@ -19,12 +28,12 @@
     --tile-size-lg: 4.8rem;
     --board-gap: 0.6rem;
 
-  /* Shadows / blur */
+    /* Shadows / blur */
     --glass-blur: 8px;
-    --shadow-1: 0 6px 20px rgba(0,0,0,0.45);
-    --shadow-2: 0 12px 36px rgba(0,0,0,0.55);
+    --shadow-1: 0 6px 20px rgba(0,0,0,0.35);
+    --shadow-2: 0 12px 36px rgba(0,0,0,0.45);
 
-  /* Typography */
+    /* Typography */
     --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     --radius-md: 12px;
 }

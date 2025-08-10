@@ -4,24 +4,53 @@
 
 /* Global / Main styles */
 :root {
-    --bg: #07132a; /* lighter than before */
-    --surface: rgba(255,255,255,0.02);
-    --accent: #7ef9ff;
+    --bg: #0b1b33; /* brighter than before */
+    --surface: rgba(255,255,255,0.04);
+    --accent: #39d8ff;
     --accent-2: #9b8cff;
-    --muted: rgba(255,255,255,0.72);
+    --muted: rgba(255,255,255,0.85);
     --glass-blur: 8px;
     --radius: 12px;
 }
 
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow-x: hidden; // no horizontal scroll ever
+    overflow-y: auto;   // only scroll if real overflow
+}
+
+body {
+    /* Prevent 100vh + padding overflow */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#root {
+    flex: 1 0 auto;
+}
+
+.app-root {
+    flex: 1 0 auto;
+}
+
+/* Optional hard kill if a rogue shadow or margin is the cause */
+html {
+        overflow-y: hidden; /* removes scrollbar entirely if not needed */
+}
+
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; }
+
 body {
     margin: 0;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    font-family: var(--font-sans);
     background:
-        radial-gradient(900px 420px at 12% 12%, rgba(126,249,255,0.035), transparent),
-        radial-gradient(700px 360px at 88% 88%, rgba(155,140,255,0.03), transparent),
-        linear-gradient(180deg, rgba(2,8,18,0.5), rgba(0,2,8,0.6)),
+        radial-gradient(900px 420px at 12% 12%, rgba(57,216,255,0.06), transparent),
+        radial-gradient(700px 360px at 88% 88%, rgba(155,140,255,0.05), transparent),
+        linear-gradient(180deg, rgba(10,30,55,0.8), rgba(5,15,30,0.9)),
         var(--bg);
     color: #eaf6ff;
     -webkit-font-smoothing: antialiased;
@@ -30,7 +59,6 @@ body {
     padding: 1rem;
 }
 
-/* App root container */
 .app-root {
     width: 100%;
     max-width: 1100px;
@@ -42,6 +70,20 @@ body {
     padding: 0.6rem;
 }
 
-/* Focus & helpers */
-:focus { outline: 2px solid rgba(126,249,255,0.12); outline-offset: 3px; border-radius: 6px; }
-.sr-only { position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+:focus {
+    outline: 2px solid rgba(57,216,255,0.35);
+    outline-offset: 3px;
+    border-radius: 6px;
+}
+
+.sr-only {
+    position:absolute !important;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+}
