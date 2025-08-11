@@ -3,61 +3,45 @@
 @use '../../../../styles/variables.scss' as *;
 
 .tile {
-    width: var(--tile-size-mobile, 3.6rem);
-    height: var(--tile-size-mobile, 3.6rem);
+    width: var(--tile-size-mobile, 48px);
+    height: var(--tile-size-mobile, 48px);
     border-radius: 8px;
-    perspective: 800px;
-}
-
-.inner {
-    width: 100%;
-    height: 100%;
-    border-radius: 8px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.012), rgba(0,0,0,0.02));
     display:flex;
     align-items:center;
     justify-content:center;
     font-weight: 800;
-    color: rgba(234,246,255,0.9);
-    border: 1px solid rgba(255,255,255,0.04);
-    transform-style: preserve-3d;
-    transition: transform 400ms ease, background 360ms ease, box-shadow 360ms ease, border 360ms ease;
-    backface-visibility: hidden;
+    color: var(--muted);
+    background: var(--panel);
+    border: 2px solid rgba(255,255,255,0.03);
 }
 
-/* reveal flip (rotateX) */
-.reveal .inner {
-    transform: rotateX(0deg);
+/* neutral filled (letters entered but not revealed) */
+.filled {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+    color: var(--muted);
+    border: 2px solid rgba(255,255,255,0.04);
 }
 
-/* states before reveal */
-.filled .inner {
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    color: rgba(234,246,255,0.95);
+/* wrong letter (dark grey) */
+.absent {
+    background: #3b3f44; /* dark grey */
+    color: #cfd6db;
+    border: 2px solid #3b3f44;
+    box-shadow: none;
 }
 
-/* final states (revealed) */
-.correct .inner {
-    background: linear-gradient(180deg, rgba(126,249,255,0.16), rgba(126,249,255,0.08));
+/* present (yellow) */
+.present {
+    background: linear-gradient(180deg, #f6d66d, #f1c84a);
+    color: #081018;
+    border: 2px solid #e8c84b;
+}
+
+/* correct (green/cyan) */
+.correct {
+    background: linear-gradient(180deg, var(--accent), #4beef8);
     color: #021022;
-    border: 1px solid rgba(126,249,255,0.6);
-    box-shadow: 0 8px 26px rgba(126,249,255,0.04);
-    transform: rotateX(180deg);
+    border: 2px solid rgba(75,238,248,0.2);
 }
 
-.present .inner {
-    background: linear-gradient(180deg, rgba(155,140,255,0.16), rgba(155,140,255,0.08));
-    color: #021022;
-    border: 1px solid rgba(155,140,255,0.5);
-    transform: rotateX(180deg);
-}
-
-.absent .inner {
-    background: rgba(255,255,255,0.02);
-    color: rgba(255,255,255,0.7);
-    border: 1px solid rgba(255,255,255,0.03);
-    transform: rotateX(180deg);
-}
-
-/* letter style */
-.letter { font-size: 1rem; letter-spacing: 0.12rem; }
+.letter { font-size: 1.05rem; letter-spacing: 0.04rem; }

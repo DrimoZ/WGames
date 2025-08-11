@@ -1,36 +1,31 @@
-// src/features/word-wave/components/board/board.tsx
-
-import React from 'react';
+// src/features/word-wave/components/Board/Board.tsx
+import type { Tile as TileType } from '../../types/tile';
 import Tile from '../tile/tile';
 import styles from './board.module.scss';
 
-type TileType = { letter: string; state: 'empty' | 'filled' | 'correct' | 'present' | 'absent' };
-
-const Board: React.FC<{ board: TileType[][]; currentRow: number; revealRow?: number }> = ({
+export default function Board({
     board,
+    mode,
     currentRow,
-    revealRow = 999,
-}) => {
+}: {
+    board: TileType[][];
+    mode: string;
+    currentRow: number;
+}) {
+    const showOnlyLast = mode === 'extreme';
+
     return (
         <div className={styles.board} role="grid" aria-label="Word Wave board">
         {board.map((row, rIdx) => {
-            const reveal = rIdx < revealRow; // reveal rows already submitted
+            const reveal = !showOnlyLast ? true : currentRow - 1 === rIdx;
             return (
             <div key={rIdx} className={styles.row} role="row" aria-rowindex={rIdx + 1}>
-                {row.map((tile, cIdx) => (
-                <Tile
-                    key={cIdx}
-                    letter={tile.letter}
-                    state={tile.state}
-                    reveal={reveal}
-                    index={cIdx}
-                />
+                {row.map((t, cIdx) => (
+                <Tile key={cIdx} char={t.char} state={t.state} reveal={reveal} />
                 ))}
             </div>
             );
         })}
         </div>
     );
-};
-
-export default Board;
+}
