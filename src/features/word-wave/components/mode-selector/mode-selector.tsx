@@ -5,10 +5,10 @@ import styles from './mode-selector.module.scss';
 import cn from 'classnames';
 
 const MODES: { key: GameMode; label: string; subtitle?: string }[] = [
-    { key: 'classic', label: 'Classic', subtitle: '5 letters · 6 guesses · show all' },
-    { key: 'hard', label: 'Hard', subtitle: '7 letters · 6 guesses · show all' },
-    { key: 'extreme', label: 'Extreme', subtitle: '9-10 letters · 6 guesses · only last' },
-    { key: 'endless', label: 'Endless', subtitle: 'Random length · 6 guesses' },
+    { key: 'classic', label: 'Classic', subtitle: '5 Letters · 6 Guesses' },
+    { key: 'hard', label: 'Hard', subtitle: '7 Letters · 6 Guesses' },
+    { key: 'extreme', label: 'Extreme', subtitle: '9 Letters · 6 Guesses' },
+    // { key: 'endless', label: 'Endless', subtitle: 'Random length · 6 Guesses' },
 ];
 
 export default function ModeSelector({ mode, onChange }: { mode: GameMode; onChange: (m: GameMode) => void }) {

@@ -1,5 +1,6 @@
 // src/features/word-wave/word-wave-game.tsx
 
+import { useEffect } from 'react';
 import Board from './components/board/board';
 import Keyboard from './components/keyboard/keyboard';
 import ModeSelector from './components/mode-selector/mode-selector';
@@ -23,24 +24,21 @@ export default function WordWaveGame() {
     return (
         <div className={styles.root}>
             <header className={styles.header}>
-                <div>
+                <div className={styles.headerBlock}>
                     <h1 className={styles.title}>Word Wave</h1>
-                    <p className={styles.subtitle}>
-                        Mode: <strong>{mode}</strong>
-                    </p>
-                </div>
-
-                <div className={styles.controls}>
                     <ModeSelector mode={mode} onChange={changeMode} />
                 </div>
             </header>
 
             <main className={styles.main}>
-                <Board board={board} mode={mode} currentRow={gameState.currentRow} />
+                <div className={styles["board-container"]}>
+                    <Board board={board} mode={mode} currentRow={gameState.currentRow} />
+                </div>
 
-                <div className={styles.rowInfo}>
-                    <div className={styles.msg} role="status" aria-live="polite">{gameState.message || ''}</div>
-                    {/* (won ? 'You won!' : lost ? `Lost — ${secret.toUpperCase()}` : '') */}
+                <div className={styles.statusBar}>
+                    { (gameState.gameStatus === 'not-started' || gameState.gameStatus === 'in-progress') && <span className={styles.msg}>{gameState.message}</span> }
+                    { gameState.gameStatus === 'completed' && <span className={styles.win}>You won!</span> }
+                    { gameState.gameStatus === 'failed' && <span className={styles.fail}>Out of tries</span> }
                 </div>
 
                 <Keyboard onKey={onKeyInput} keyStates={keyStates} />

@@ -14,7 +14,7 @@ const Home: React.FC = () => {
                     </p>
 
                         <div className={styles.ctaRow}>
-                            <Link to="/games/wordle" className={styles.cta}>
+                            <Link to="/games/wordwave" className={styles.cta}>
                                 Play Word Wave
                             </Link>
                             <a

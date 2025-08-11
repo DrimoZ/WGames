@@ -2,19 +2,41 @@
 
 @use '../../../../styles/variables.scss' as *;
 
-.root { display:flex; gap: 0.6rem; flex-wrap:wrap; }
+.root {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    justify-content: center; /* center mode buttons under title */
+}
 
 .modeBtn {
-    padding: 0.5rem 0.8rem;
+    padding: 0.5rem 0.9rem;
     border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.03);
-    background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+    border: 1px solid rgba(255,255,255,0.08);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.1));
     color: var(--muted);
     cursor: pointer;
-    text-align: left;
+    text-align: center;
+    min-width: 110px;
+    transition: transform 0.15s ease, background 0.15s ease;
 }
-.modeBtn .label { font-weight:700; color: var(--accent); }
-.modeBtn .sub { font-size: 0.78rem; color: rgba(255,255,255,0.75); }
 
-.modeBtn:hover { transform: translateY(-2px); }
-.active { background: linear-gradient(180deg, rgba(57,216,255,0.12), rgba(155,140,255,0.03)); }
+.modeBtn .label {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 1rem;
+}
+
+.modeBtn .sub {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.75);
+}
+
+.modeBtn:hover {
+    transform: translateY(-2px);
+}
+
+.active {
+    background: linear-gradient(180deg, rgba(57,216,255,0.15), rgba(155,140,255,0.08));
+    border-color: var(--accent);
+}
