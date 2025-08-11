@@ -26,6 +26,35 @@ export default function WordWaveGame() {
         }
     }, [gameState]);
 
+    // Add keyboard event handlers
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (!gameState || isLoading) return;
+
+            switch(event.key.toLowerCase()) {
+                case 'backspace':
+                    event.preventDefault();
+                    onKeyInput('BACK');
+                    break;
+                case 'enter':
+                    event.preventDefault();
+                    onKeyInput('ENTER');
+                    break;
+                default:
+                    if (/^[a-z]$/.test(event.key)) {
+                        event.preventDefault();
+                        onKeyInput(event.key.toUpperCase());
+                    }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [gameState, isLoading, onKeyInput]);
+
     if (isLoading) {
         return <div className={styles.root}>Loading...</div>;
     }
