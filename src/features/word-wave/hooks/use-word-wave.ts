@@ -22,6 +22,12 @@ export function useWordWave(initialMode: GameMode = 'classic'): {
 
     const [mode, setMode] = useState<GameMode>(initialMode);
 
+    useEffect(() => {
+        if (!gameState && initialMode) {
+        changeState(initialMode);
+        }
+    }, [initialMode, gameState, changeState]);
+
     // clear temporary messages after short delay
     useEffect(() => {
         const t = setTimeout(() => updateCurrentGameState({ message: '' }), 2500);

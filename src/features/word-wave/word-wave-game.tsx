@@ -1,6 +1,6 @@
 // src/features/word-wave/word-wave-game.tsx
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Board from './components/board/board';
 import Keyboard from './components/keyboard/keyboard';
 import ModeSelector from './components/mode-selector/mode-selector';
@@ -17,8 +17,21 @@ export default function WordWaveGame() {
         onKeyInput,
     } = useWordWave();
 
-    if (!gameState) {
+    // Add loading state management
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (gameState) {
+        setIsLoading(false);
+        }
+    }, [gameState]);
+
+    if (isLoading) {
         return <div className={styles.root}>Loading...</div>;
+    }
+
+    if (!gameState) {
+        return <div className={styles.root}>Error: No game state found</div>;
     }
 
     return (
