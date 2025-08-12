@@ -44,7 +44,7 @@ const Home: React.FC = () => {
                     to="/games/wordwave"
                 />
                 <GameCard
-                    title="Mini-Arcade (coming soon)"
+                    title="Mini-Arcade"
                     description="Short neon micro-games (planning). Modular & pluggable."
                     to="#"
                     comingSoon

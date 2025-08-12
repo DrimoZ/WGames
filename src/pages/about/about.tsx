@@ -87,7 +87,7 @@ const About: React.FC = () => {
                 </section>
 
                 <footer className={styles.footer}>
-                    <div>Contact: <a className={styles.link} href="mailto:hello@wgames.dev">hello@wgames.dev</a></div>
+                    <div>Contact: <a className={styles.link} href="mailto:drimozbe@gmail.com">drimozbe@gmail.com</a></div>
                     <div className={styles.small}>© {new Date().getFullYear()} WGames — built with ❤️ for small good experiences.</div>
                 </footer>
             </div>
