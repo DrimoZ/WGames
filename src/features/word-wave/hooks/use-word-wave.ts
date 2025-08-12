@@ -30,7 +30,9 @@ export function useWordWave(initialMode: GameMode = 'classic'): {
 
     // clear temporary messages after short delay
     useEffect(() => {
-        const t = setTimeout(() => updateCurrentGameState({ message: '' }), 2500);
+        if (!gameState?.message || gameState?.message === '') return;
+
+        const t = setTimeout(() => updateCurrentGameState({ message: '' }), 1000);
         return () => clearTimeout(t);
     }, [gameState?.message, updateCurrentGameState]);
 
@@ -50,13 +52,21 @@ export function useWordWave(initialMode: GameMode = 'classic'): {
         const newRow = [...gameState.boardState[rowIndex]];
         newRow[tileIndex] = { ...newRow[tileIndex], ...newData };
 
-        updateCurrentGameState({
+        const updatedState: Partial<GameState> = {
             boardState: [
                 ...gameState!.boardState.slice(0, rowIndex),
                 newRow,
                 ...gameState!.boardState.slice(rowIndex + 1)
-            ]
-        } as Partial<GameState>);
+            ],
+            lastUpdate: Date.now(),
+        };
+
+        if (gameState.gameStatus === 'not-started') {
+            updatedState.gameStatus = 'in-progress';
+            updatedState.gameStartTime = Date.now();
+        }
+
+        updateCurrentGameState(updatedState);
     };
 
     /**
@@ -131,9 +141,6 @@ export function useWordWave(initialMode: GameMode = 'classic'): {
 
         // Secure state updates with immutable patterns
         updateCurrentGameState({
-            lastUpdate: Date.now(),
-            gameStatus: 'in-progress',
-            gameStartTime: gameState!.gameStartTime || Date.now(),
             currentRow: currentRow + 1,
             boardState: [
                 ...gameState!.boardState.slice(0, currentRow),

@@ -12,6 +12,9 @@
 }
 
 .header {
+    position: relative;
+    z-index: 120;
+
     display: flex;
     flex-direction: column;
     align-items: center;

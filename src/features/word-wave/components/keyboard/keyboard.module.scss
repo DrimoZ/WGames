@@ -1,10 +1,22 @@
 // src/features/word-wave/components/keyboard/keyboard.module.scss
 
-@use '../../../../styles/variables.scss' as *;
+@use "../../../../styles/variables.scss" as *;
 
-.keyboard { display:flex; flex-direction:column; gap:0.5rem; max-width:720px; width:100%; align-items:center; }
+.keyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 720px;
+    width: 100%;
+    align-items: center;
+}
 
-.row { display:flex; gap:0.45rem; justify-content:center; width:100%; }
+.row {
+    display: flex;
+    gap: 0.45rem;
+    justify-content: center;
+    width: 100%;
+}
 
 .key {
     min-width: 36px;
@@ -13,16 +25,36 @@
     border: none;
     background: var(--key-bg);
     color: var(--key-text);
-    font-weight:700;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.45);
-    transition: transform .12s ease, box-shadow .12s ease;
+    font-weight: 700;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
     cursor: pointer;
 }
-.wide { min-width: 84px; border-radius: 10px; font-weight:800; }
+.wide {
+    min-width: 84px;
+    border-radius: 10px;
+    font-weight: 800;
+}
 
 /* colors */
-.correct { background: linear-gradient(180deg, var(--accent), #4beef8); color:#021022; }
-.present { background: linear-gradient(180deg, #f6d66d, #f1c84a); color:#081018; }
-.absent { background: #3b3f44; color: #cfd6db; }
-
-.key:active { transform: translateY(2px); }
+.correct {
+    background: linear-gradient(180deg, var(--accent), #4beef8);
+    color: #021022;
+}
+.present {
+    background: linear-gradient(180deg, #f6d66d, #f1c84a);
+    color: #081018;
+}
+.absent {
+    background: #3b3f44;
+    color: #cfd6db;
+}
+.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+.key:active {
+    transform: translateY(2px);
+}

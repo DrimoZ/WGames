@@ -99,7 +99,7 @@ export function useGameState(initialMode: GameMode = 'classic'): {
      */
     function updateCurrentGameState(updatedState: Partial<GameState>): GameState | null {
         if (currentGameState) {
-            const newState = { ...currentGameState, ...updatedState };
+            const newState = { ...currentGameState, ...updatedState};
             setGameState(newState);
 
             // Save the updated state to local storage

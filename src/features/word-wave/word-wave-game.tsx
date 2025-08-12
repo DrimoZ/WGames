@@ -6,6 +6,7 @@ import Keyboard from './components/keyboard/keyboard';
 import ModeSelector from './components/mode-selector/mode-selector';
 import { useWordWave } from './hooks/use-word-wave';
 import styles from './word-wave-game.module.scss';
+import WinLoseModal from './components/win-loose-modal/win-lose-modal';
 
 export default function WordWaveGame() {
     const {
@@ -17,19 +18,27 @@ export default function WordWaveGame() {
         onKeyInput,
     } = useWordWave();
 
+    const isWin = gameState?.gameStatus === 'completed';
+    const isFail = gameState?.gameStatus === 'failed';
+
     // Add loading state management
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         if (gameState) {
-        setIsLoading(false);
+            setIsLoading(false);
         }
     }, [gameState]);
+
+    // modal visible when completed or failed
+    const modalVisible = !!gameState && (isWin || isFail);
+
 
     // Add keyboard event handlers
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (!gameState || isLoading) return;
+            if (modalVisible) return;
 
             switch(event.key.toLowerCase()) {
                 case 'backspace':
@@ -53,7 +62,7 @@ export default function WordWaveGame() {
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [gameState, isLoading, onKeyInput]);
+    }, [gameState, isLoading, modalVisible, onKeyInput]);
 
     if (isLoading) {
         return <div className={styles.root}>Loading...</div>;
@@ -77,14 +86,16 @@ export default function WordWaveGame() {
                     <Board board={board} mode={mode} currentRow={gameState.currentRow} />
                 </div>
 
-                <div className={styles.statusBar}>
+                {/* <div className={styles.statusBar}>
                     { (gameState.gameStatus === 'not-started' || gameState.gameStatus === 'in-progress') && <span className={styles.msg}>{gameState.message}</span> }
                     { gameState.gameStatus === 'completed' && <span className={styles.win}>You won!</span> }
                     { gameState.gameStatus === 'failed' && <span className={styles.fail}>Out of tries</span> }
-                </div>
+                </div> */}
 
-                <Keyboard onKey={onKeyInput} keyStates={keyStates} />
+                <Keyboard onKey={onKeyInput} keyStates={keyStates} disabled={modalVisible}/>
             </main>
+
+            <WinLoseModal visible={modalVisible} status={isWin ? 'completed' : isFail ? 'failed' : null} gameState={gameState} />
         </div>
     );
 }
