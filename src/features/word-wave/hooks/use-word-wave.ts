@@ -8,7 +8,7 @@ import type { LetterState } from '../types/letter-state';
 import type { Tile } from '../types/tile';
 import { valideDictionnary } from '../constants/words/valid';
 import { MODE_CONFIG } from '../constants/mode-configs';
-
+import { useGameStats } from './use-game-stats';
 
 export function useWordWave(initialMode: GameMode = 'classic'): {
     gameState: GameState | null;
@@ -21,6 +21,9 @@ export function useWordWave(initialMode: GameMode = 'classic'): {
     const { gameState, changeState, updateCurrentGameState } = useGameState(initialMode);
 
     const [mode, setMode] = useState<GameMode>(initialMode);
+
+    // Initialize game stats
+    const { addGameToStats } = useGameStats();
 
     useEffect(() => {
         if (!gameState && initialMode) {
@@ -64,6 +67,14 @@ export function useWordWave(initialMode: GameMode = 'classic'): {
         if (gameState.gameStatus === 'not-started') {
             updatedState.gameStatus = 'in-progress';
             updatedState.gameStartTime = Date.now();
+
+            addGameToStats(
+                mode,
+                gameState.gameDate,
+                updatedState.gameStatus ?? gameState.gameStatus,
+                updatedState.lastUpdate! - updatedState.gameStartTime!,
+                gameState.currentRow + 1
+            )
         }
 
         updateCurrentGameState(updatedState);
@@ -86,6 +97,17 @@ export function useWordWave(initialMode: GameMode = 'classic'): {
         changeState(newMode);
     }
 
+    /**
+     * Handles key input for the game.
+     *
+     * @param key The key that was pressed.
+     *
+     * If the game is not in progress or not started, the function does nothing.
+     * Otherwise, it checks if the key is a valid letter key and if the game status is not 'completed' or 'failed'.
+     * If the key is a valid letter key, it writes the key to the board.
+     * If the key is 'ENTER', it submits the current row on the board for validation and processing.
+     * If the key is 'BACK', it removes the last key from the board.
+     */
     function onKeyInput(key: string) {
         if (!gameState) return;
         if (gameState.gameStatus === 'completed' || gameState.gameStatus === 'failed' ) return;
@@ -106,6 +128,15 @@ export function useWordWave(initialMode: GameMode = 'classic'): {
         }
     }
 
+    /**
+     * Submits the current row on the board for validation and processing.
+     *
+     * If the game is not in progress or not started, the function does nothing.
+     * Otherwise, it checks if the guess is valid and if the word to guess is set.
+     * If the guess is valid and the word to guess is set, it checks if the guess is in the dictionary.
+     * If the guess is in the dictionary, it validates the guess and updates the board state accordingly.
+     * It also checks for win/loss conditions and updates the game state and stats accordingly.
+     */
     function submitRow() {
         if (!gameState || (gameState.gameStatus !== 'in-progress' && gameState.gameStatus !== 'not-started')) return;
 
@@ -138,6 +169,7 @@ export function useWordWave(initialMode: GameMode = 'classic'): {
         }
 
         const validatedGuess = validateGuess(guess, wordToGuess);
+        console.log(validatedGuess);
 
         // Secure state updates with immutable patterns
         updateCurrentGameState({
@@ -154,11 +186,38 @@ export function useWordWave(initialMode: GameMode = 'classic'): {
         // Check for win
         if (validatedGuess.every(tile => tile.state === 'correct')) {
             updateCurrentGameState({ gameStatus: 'completed', message: 'You win!' });
+
+            addGameToStats(
+                mode,
+                gameState.gameDate,
+                'completed',
+                Date.now() - (gameState.gameStartTime ?? 0),
+                currentRow + 1
+            )
         }
 
         // Check for loss
         else if (currentRow >= MODE_CONFIG[mode].rows - 1) {
             updateCurrentGameState({ gameStatus: 'failed', message: 'You lose!' });
+
+            addGameToStats(
+                mode,
+                gameState.gameDate,
+                'failed',
+                Date.now() - (gameState.gameStartTime ?? 0),
+                currentRow + 1
+            )
+        }
+
+        // Update game stats at submit
+        else {
+            addGameToStats(
+                mode,
+                gameState.gameDate,
+                gameState.gameStatus,
+                Date.now() - (gameState.gameStartTime ?? 0),
+                currentRow + 1
+            )
         }
     }
 

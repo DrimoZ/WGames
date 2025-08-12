@@ -34,7 +34,8 @@ export function validateGuess(guess: Tile[], wordToGuess: string): Tile[] {
 
     // Mark remaining tiles as absent
     for (let i = 0; i < guess.length; i++) {
-        if (!result[i].state) {
+        console.log(result[i].state)
+        if (!result[i].state || (result[i].state !== 'correct' && result[i].state !== 'present')) {
             result[i].state = 'absent';
         }
     }
