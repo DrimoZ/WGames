@@ -86,16 +86,16 @@ export default function WordWaveGame() {
                     <Board board={board} mode={mode} currentRow={gameState.currentRow} />
                 </div>
 
-                {/* <div className={styles.statusBar}>
-                    { (gameState.gameStatus === 'not-started' || gameState.gameStatus === 'in-progress') && <span className={styles.msg}>{gameState.message}</span> }
-                    { gameState.gameStatus === 'completed' && <span className={styles.win}>You won!</span> }
-                    { gameState.gameStatus === 'failed' && <span className={styles.fail}>Out of tries</span> }
-                </div> */}
+                { gameState.message && (
+                    <div className={styles.statusBar}>
+                        { (gameState.gameStatus === 'not-started' || gameState.gameStatus === 'in-progress') && <span className={styles.msg}>{gameState.message}</span> }
+                    </div>
+                ) }
 
                 <Keyboard onKey={onKeyInput} keyStates={keyStates} disabled={modalVisible}/>
             </main>
 
-            <WinLoseModal visible={modalVisible} status={isWin ? 'completed' : isFail ? 'failed' : null} gameState={gameState} />
+            <WinLoseModal visible={modalVisible} gameState={gameState} />
         </div>
     );
 }

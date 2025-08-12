@@ -169,7 +169,6 @@ export function useWordWave(initialMode: GameMode = 'classic'): {
         }
 
         const validatedGuess = validateGuess(guess, wordToGuess);
-        console.log(validatedGuess);
 
         // Secure state updates with immutable patterns
         updateCurrentGameState({

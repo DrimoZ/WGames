@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { GameState } from '../../types/game-state';
 import { MODE_CONFIG } from '../../constants/mode-configs';
 import styles from './win-lose-modal.module.scss';
+import { useGameStats } from '../../hooks/use-game-stats';
 
 /* ------------------------------
     Helpers / small utilities
@@ -30,10 +31,9 @@ function msUntilNextUTCMidnight(): number {
 }
 
 /* ------------------------------
-    Small confetti controller
-    encapsulates canvas animation & cleanup
+    Confetti controller
 ------------------------------ */
-function createConfettiController(canvas: HTMLCanvasElement) {
+function createConfettiController(canvas: HTMLCanvasElement | null) {
     if (!canvas) return null;
 
     const ctx = canvas.getContext('2d')!;
@@ -44,9 +44,7 @@ function createConfettiController(canvas: HTMLCanvasElement) {
     const W = () => (canvas.width = window.innerWidth);
     const H = () => (canvas.height = window.innerHeight);
 
-    // particle factory
     type Particle = { x: number; y: number; vx: number; vy: number; size: number; color: string; rot: number };
-
     const particles: Particle[] = [];
 
     function initParticles() {
@@ -55,8 +53,8 @@ function createConfettiController(canvas: HTMLCanvasElement) {
         particles.length = 0;
         for (let i = 0; i < CONFETTI_COUNT; i++) {
             particles.push({
-                x: canvas.width / 2 + (Math.random() - 0.5) * 360,
-                y: canvas.height * 0.2 + (Math.random() - 0.5) * 80,
+                x: canvas!.width / 2 + (Math.random() - 0.5) * 360,
+                y: canvas!.height * 0.2 + (Math.random() - 0.5) * 80,
                 vx: (Math.random() - 0.5) * 7,
                 vy: Math.random() * 6 + 2,
                 size: Math.random() * 9 + 3,
@@ -69,7 +67,7 @@ function createConfettiController(canvas: HTMLCanvasElement) {
     function frame(t: number) {
         if (!startTs) startTs = t;
         const elapsed = t - startTs;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas!.width, canvas!.height);
 
         for (let i = 0; i < particles.length; i++) {
             const p = particles[i];
@@ -89,7 +87,7 @@ function createConfettiController(canvas: HTMLCanvasElement) {
         if (elapsed < CONFETTI_DURATION_MS) {
             rafId = requestAnimationFrame(frame);
         } else {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 0, canvas!.width, canvas!.height);
             cancelAnimationFrame(rafId);
         }
     }
@@ -102,6 +100,7 @@ function createConfettiController(canvas: HTMLCanvasElement) {
     }
 
     function resize() {
+        if (!canvas) return;
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
@@ -109,10 +108,33 @@ function createConfettiController(canvas: HTMLCanvasElement) {
     function cleanup() {
         window.removeEventListener('resize', resize);
         cancelAnimationFrame(rafId);
-        if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (ctx) ctx.clearRect(0, 0, canvas!.width, canvas!.height);
     }
 
     return { start, cleanup };
+}
+
+/* ------------------------------
+    Small derived helpers
+------------------------------ */
+
+// compute longest consecutive 'completed' streak from history
+function computeBestStreak(history: { gameStatus: string }[]) {
+    if (!history || history.length === 0) return 0;
+
+    let best = 0;
+    let current = 0;
+
+    for (let i = history.length - 1; i >= 0; i--) {
+        if (history[i].gameStatus === 'completed') {
+            current++;
+            best = Math.max(best, current);
+        } else {
+            current = 0;
+        }
+    }
+
+    return best;
 }
 
 /* ------------------------------
@@ -131,8 +153,41 @@ export default function WinLoseModal({ visible, gameState }: Props) {
     const confettiRef = useRef<ReturnType<typeof createConfettiController> | null>(null);
     const [animate, setAnimate] = useState(false);
 
-    // only show when visible and status is complete/failed and gameState exists
+  // safe stats retrieval (hook may expose different API — adapt if needed)
+    const { getStatsForMode } = useGameStats();
+    const modeStats = useMemo(() => {
+        if (!gameState) return { history: [], currentStreak: 0 };
+
+        // guard in case getStatsForMode is undefined
+        try {
+            return getStatsForMode ? getStatsForMode(gameState.gameMode) : { history: [], currentStreak: 0 };
+        } catch {
+            return { history: [], currentStreak: 0 };
+        }
+    }, [gameState, getStatsForMode]);
+
+  // derived stats
+    const stats = useMemo(() => {
+        const h = modeStats.history || [];
+        const total = h.length;
+        const wins = h.filter(g => g.gameStatus === 'completed').length;
+        const losses = h.filter(g => g.gameStatus === 'failed').length;
+
+        return {
+            gamesPlayed: total,
+            winRate: total > 0 ? (wins / total) * 100 : 0,
+            currentStreak: modeStats.currentStreak ?? 0,
+            bestStreak: computeBestStreak(h),
+            averageAttempts: total > 0 ? Math.round(h.reduce((s: number, g) => s + (g.attempts || 0), 0) / total) : 0,
+            fastestGame: total > 0 ? Math.min(...h.map(g => g.gameDuration || Infinity)) : Infinity,
+            slowestGame: total > 0 ? Math.max(...h.map(g => g.gameDuration || 0)) : 0,
+            gamesWon: wins,
+            gamesLost: losses,
+        };
+    }, [modeStats]);
+
     const shouldRender = visible && !!status && !!gameState;
+
     useEffect(() => {
         if (!shouldRender) return;
 
@@ -146,25 +201,23 @@ export default function WinLoseModal({ visible, gameState }: Props) {
         };
     }, [shouldRender]);
 
-    // confetti side effect (starts only on wins)
+  // confetti on win
     useEffect(() => {
         if (!shouldRender) return;
         if (status !== 'completed') return;
 
-        confettiRef.current = createConfettiController(canvasRef.current!);
+        confettiRef.current = createConfettiController(canvasRef.current);
         confettiRef.current?.start();
 
-        // cleanup
         return () => {
             confettiRef.current?.cleanup();
             confettiRef.current = null;
         };
     }, [shouldRender, status]);
 
-    // computed stats (memo for clarity)
     const triedRows = useMemo(() => {
         if (!gameState) return 0;
-        return Math.min(gameState.currentRow + 1, MODE_CONFIG[gameState.gameMode].rows);
+        return Math.min((gameState.currentRow ?? 0) + 1, MODE_CONFIG[gameState.gameMode].rows);
     }, [gameState]);
 
     const attemptsUsed = triedRows;
@@ -182,21 +235,29 @@ export default function WinLoseModal({ visible, gameState }: Props) {
     if (!shouldRender || !gameState) return null;
 
     const title = status === 'completed' ? 'You win ✨' : 'You lost 💥';
-    const subtitle =
-        status === 'completed'
-        ? "Nice work — come back tomorrow for a new challenge."
-        : `Better luck next time — come back tomorrow for a new challenge.`;
+    const subtitle = status === 'completed'
+        ? 'Nice work — come back tomorrow for a new challenge.'
+        : 'Better luck next time — come back tomorrow for a new challenge.';
 
     return (
         <div className={styles.overlay} aria-hidden={!shouldRender} data-animate={animate ? '1' : '0'}>
             <canvas ref={canvasRef} className={styles.canvas} />
 
             <div className={styles.box} role="dialog" aria-modal="true" aria-labelledby="wl-title">
-                <h2 id="wl-title" className={styles.title}>
-                    {title}
-                </h2>
-                <p className={styles.sub}>{subtitle}</p>
+                {/* header: title + countdown */}
+                <div className={styles.head}>
+                    <div className={styles.headLeft}>
+                        <h2 id="wl-title" className={styles.title}>{title}</h2>
+                        <p className={styles.sub}>{subtitle}</p>
+                    </div>
 
+                    <div className={styles.countdown} aria-hidden={false}>
+                        <div className={styles.countdownLabel}>Next word (UTC)</div>
+                        <div className={styles.countdownValue}>{formatDuration(countdownMs)}</div>
+                    </div>
+                </div>
+
+                {/* top small stats */}
                 <div className={styles.stats}>
                     <div className={styles.stat}>
                         <div className={styles.statLabel}>Today's word</div>
@@ -205,9 +266,7 @@ export default function WinLoseModal({ visible, gameState }: Props) {
 
                     <div className={styles.stat}>
                         <div className={styles.statLabel}>Attempts</div>
-                        <div className={styles.statValue}>
-                            {attemptsUsed}/{MODE_CONFIG[gameState.gameMode].rows}
-                        </div>
+                        <div className={styles.statValue}>{attemptsUsed}/{MODE_CONFIG[gameState.gameMode].rows}</div>
                     </div>
 
                     <div className={styles.stat}>
@@ -216,18 +275,52 @@ export default function WinLoseModal({ visible, gameState }: Props) {
                     </div>
                 </div>
 
+                {/* bottom: derived stats grid */}
                 <div className={styles.bottom}>
-                    <div className={styles.next}>
-                        Next word (UTC) in <strong>{formatDuration(countdownMs)}</strong>
-                    </div>
+                    <div className={styles.statsGrid}>
+                        <div className={styles.statCard}>
+                            <div className={styles.statTitle}>Games Played</div>
+                            <div className={styles.statValue}>{stats.gamesPlayed}</div>
+                        </div>
 
-                    <div className={styles.placeholder}>
-                        <div className={styles.placeholderTitle}>Stats (coming soon)</div>
+                        <div className={styles.statCard}>
+                            <div className={styles.statTitle}>Win Rate</div>
+                            <div className={styles.statValue}>{stats.winRate.toFixed(1)}%</div>
+                        </div>
 
-                        <div className={styles.placeholderGrid}>
-                            <div className={styles.pItem}>Streak: —</div>
-                            <div className={styles.pItem}>Win %: —</div>
-                            <div className={styles.pItem}>Best time: —</div>
+                        <div className={styles.statCard}>
+                            <div className={styles.statTitle}>Current Streak</div>
+                            <div className={styles.statValue}>{stats.currentStreak}</div>
+                        </div>
+
+                        <div className={styles.statCard}>
+                            <div className={styles.statTitle}>Best Streak</div>
+                            <div className={styles.statValue}>{stats.bestStreak}</div>
+                        </div>
+
+                        <div className={styles.statCard}>
+                            <div className={styles.statTitle}>Avg Attempts</div>
+                            <div className={styles.statValue}>{stats.averageAttempts}</div>
+                        </div>
+
+                        <div className={styles.statCard}>
+                            <div className={styles.statTitle}>Fastest Game</div>
+                            <div className={styles.statValue}>{stats.fastestGame === Infinity ? '—' : formatDuration(stats.fastestGame)}</div>
+                        </div>
+
+                        <div className={styles.statCard}>
+                            <div className={styles.statTitle}>Slowest Game</div>
+                            <div className={styles.statValue}>{stats.slowestGame ? formatDuration(stats.slowestGame) : '—'}</div>
+                        </div>
+
+                        <div className={styles.statCard}>
+                            <div className={styles.statTitle}>Games Won</div>
+                            <div className={styles.statValue}>{stats.gamesWon}</div>
+                        </div>
+
+                        <div className={styles.statCard}>
+                            <div className={styles.statTitle}>Games Lost</div>
+                            <div className={styles.statValue}>{stats.gamesLost}</div>
                         </div>
                     </div>
                 </div>
